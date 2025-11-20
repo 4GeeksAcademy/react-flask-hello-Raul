@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import Private from "./pages/private";
+import RutaProtegida from "./pages/rutaprotegida";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -21,7 +23,9 @@ export const router = createBrowserRouter(
       <>
       <Route path= "/" element={<Login/>} />
       <Route path="/signup" element={<Signup/>}/>
-    
+      <Route element={<RutaProtegida/>}>
+        <Route path="/protegida" element={<Private/>}/>
+      </Route>
       </>
     )
 );

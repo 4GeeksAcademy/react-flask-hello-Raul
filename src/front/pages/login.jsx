@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
 const Login = () => {
+    const navigate = useNavigate()
     const url = import.meta.env.VITE_BACKEND_URL
     const [formData, setFormData] = useState({
         email: "",
@@ -28,9 +29,10 @@ const Login = () => {
         if (response.ok) {
             setMensaje("Exito al iniciar sesion")
             localStorage.setItem("jwt-token", data.token)
+            navigate("/protegida")
         }
         else {
-            setMensaje("Error al iniciar sesión")
+            setMensaje(data.error)
         }
 
 
@@ -45,7 +47,7 @@ const Login = () => {
                     style={{ "backgroundColor": "black" }}>Continuar</button>
             </form>
             <Link to={'/signup'}><p className="enlace">Registro</p></Link>
-            <p>{mensaje}</p>
+            <p className="text-center text-danger">{mensaje}</p>
         </>
     )
 }

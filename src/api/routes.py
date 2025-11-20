@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
 
@@ -61,3 +61,26 @@ def login():
             
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@api.route('/verificar_jwt',methods=["GET"])
+@jwt_required()
+def verificar_jwt():
+    try:
+        email = get_jwt_identity()
+        usuario = User.query.get(email)
+        if not usuario:
+            return jsonify({"error": "El token no es valido"}), 404
+        else:
+            return jsonify({"exito":"el token es válido", "email" : email }), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al verificar token: {str(e)}"}), 500
+    
+@api.route('/user', methods=["GET"])
+@jwt_required() 
+def getUser():
+    email = get_jwt_identity()
+    if email:
+        return jsonify({'email':email}), 200
+    else:
+        return jsonify({'error':'no se ha encontrado el usuario'}), 404
